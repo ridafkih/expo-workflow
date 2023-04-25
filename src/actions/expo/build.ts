@@ -6,24 +6,23 @@ import {
 } from "../../utils/expo";
 import { getMessage } from "../../utils/sticky-message";
 
-/**
- * Generate a build table row for the comment
- * @param {string} status - The build status
- * @param {string} branchName - The branch name
- * @param {string} version - The app version
- * @param {string} runtimeVersion - The runtime version
- * @param {string} iosBuildId - The iOS build ID
- * @param {string} androidBuildId - The Android build ID
- * @return {string} - The formatted build table row
- */
-const buildTableRow = (
-  status: string,
-  branchName: string,
-  version: string,
-  runtimeVersion: string,
-  iosBuildId?: string,
-  androidBuildId?: string
-): string => {
+interface BuildOptions {
+  status: string;
+  branchName: string;
+  version: string;
+  runtimeVersion: string;
+  iosBuildId?: string;
+  androidBuildId?: string;
+}
+
+const buildTable = ({
+  status,
+  branchName,
+  version,
+  runtimeVersion,
+  iosBuildId,
+  androidBuildId,
+}: BuildOptions): string => {
   const iosLink = iosBuildId
     ? `[iOS](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${iosBuildId})`
     : "";
@@ -31,7 +30,11 @@ const buildTableRow = (
     ? `[Android](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${androidBuildId})`
     : "";
 
-  return `| ${status} | ${branchName} | ${version} | ${runtimeVersion} | ${iosLink} / ${androidLink} |`;
+  return `
+    | **Status** | **Branch** | **Version** | **Runtime Version** | Download |
+    |-|-|-|-|-|
+    | ${status} | ${branchName} | ${version} | ${runtimeVersion} | ${iosLink} / ${androidLink} |
+  `;
 };
 
 export const main = async () => {
@@ -69,7 +72,12 @@ export const main = async () => {
     await comment.update(`
       **A native change has been detected, an artifact for this branch is being generated and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
-      ${buildTableRow("Building ⏳", branchName, version, runtimeVersion)}
+      ${buildTable({
+        status: "Building ⏳",
+        branchName,
+        version,
+        runtimeVersion,
+      })}
     `);
 
     const build = await easBuild({ platform: "ios", profile: "artifact" });
@@ -77,14 +85,14 @@ export const main = async () => {
     await comment.update(`
       **A native change has been detected, an artifact for this branch has been generated and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
-      ${buildTableRow(
-        "Complete ✅",
+      ${buildTable({
+        status: "Complete ✅",
         branchName,
         version,
         runtimeVersion,
-        build.ios?.id,
-        build.android?.id
-      )}
+        iosBuildId: build.ios?.id,
+        androidBuildId: build.android?.id,
+      })}
     `);
 
     return;
@@ -96,14 +104,14 @@ export const main = async () => {
   await comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
-    ${buildTableRow(
-      "Found 🔍",
+    ${buildTable({
+      status: "Found 🔍",
       branchName,
-      ios.appVersion,
-      ios.runtimeVersion,
-      ios?.id,
-      android?.id
-    )}
+      version: ios.appVersion,
+      runtimeVersion: ios.runtimeVersion,
+      iosBuildId: ios?.id,
+      androidBuildId: android?.id,
+    })}
   `);
 };
 
