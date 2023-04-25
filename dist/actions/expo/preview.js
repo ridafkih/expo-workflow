@@ -17,6 +17,7 @@ const git_1 = require("../../utils/git");
 const dependency_hash_1 = require("../../utils/dependency-hash");
 const npm_1 = require("../../utils/npm");
 const exec_1 = require("../../utils/exec");
+const expo_1 = require("../../utils/expo");
 const handleNonMatchingVersions = (versionTags, majorMinor, version) => __awaiter(void 0, void 0, void 0, function* () {
     const { patches } = versionTags[majorMinor];
     const isMostRecentPatch = patches[patches.length - 1] === `v${version}`;
@@ -67,12 +68,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, git_1.configureGit)();
     yield (0, npm_1.incrementVersion)(isPatch ? "patch" : "minor");
     yield (0, git_1.forcePush)("main").catch(() => undefined);
-    if (isPatch) {
-        console.log("Would do a patch.");
-    }
-    else {
-        console.log("Would do a build.");
-    }
+    if (isPatch)
+        return (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
+    (0, expo_1.easBuild)({ platform: "ios", profile: "development" });
 });
 exports.main = main;
 (0, exports.main)();

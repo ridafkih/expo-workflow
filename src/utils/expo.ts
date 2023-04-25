@@ -28,6 +28,7 @@ interface FinishedBuild {
 
 interface EASUpdateOptions {
   type: AppProfile;
+  updateBranchName?: string;
 }
 
 interface EASBuildOptions {
@@ -81,7 +82,10 @@ export const getBuilds = async ({ runtimeVersion }: GetBuildOptions) => {
  * @param options - The options for the function.
  * @returns The trimmed output from the executed command.
  */
-export const easUpdate = async ({ type }: EASUpdateOptions) => {
+export const easUpdate = async ({
+  type,
+  updateBranchName,
+}: EASUpdateOptions) => {
   const branchName = getInput("branch-name");
   const commitMessageContents = await getLatestCommitMessage();
 
@@ -91,7 +95,7 @@ export const easUpdate = async ({ type }: EASUpdateOptions) => {
       "update",
       `--message`,
       commitMessageContents,
-      `--branch=${branchName}`,
+      `--branch=${updateBranchName ?? branchName}`,
       "--non-interactive",
     ],
     { env: { APP_VARIANT: type, ...process.env } }

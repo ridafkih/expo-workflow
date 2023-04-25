@@ -52,14 +52,14 @@ exports.getBuilds = getBuilds;
  * @param options - The options for the function.
  * @returns The trimmed output from the executed command.
  */
-const easUpdate = ({ type }) => __awaiter(void 0, void 0, void 0, function* () {
+const easUpdate = ({ type, updateBranchName, }) => __awaiter(void 0, void 0, void 0, function* () {
     const branchName = (0, core_1.getInput)("branch-name");
     const commitMessageContents = yield (0, git_1.getLatestCommitMessage)();
     return (0, exec_1.getCwdExecOutput)("eas", [
         "update",
         `--message`,
         commitMessageContents,
-        `--branch=${branchName}`,
+        `--branch=${updateBranchName !== null && updateBranchName !== void 0 ? updateBranchName : branchName}`,
         "--non-interactive",
     ], { env: Object.assign({ APP_VARIANT: type }, process.env) });
 });

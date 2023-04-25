@@ -12,6 +12,7 @@ import {
 import { checkReferencesDependencies } from "../../utils/dependency-hash";
 import { incrementVersion } from "../../utils/npm";
 import { getCwdExecOutput } from "../../utils/exec";
+import { easBuild, easUpdate } from "../../utils/expo";
 
 const handleNonMatchingVersions = async (
   versionTags: Awaited<ReturnType<typeof getVersionTags>>,
@@ -90,11 +91,10 @@ export const main = async () => {
   await incrementVersion(isPatch ? "patch" : "minor");
   await forcePush("main").catch(() => undefined);
 
-  if (isPatch) {
-    console.log("Would do a patch.");
-  } else {
-    console.log("Would do a build.");
-  }
+  if (isPatch)
+    return easUpdate({ type: "development", updateBranchName: "main" });
+
+  easBuild({ platform: "ios", profile: "development" });
 };
 
 main();

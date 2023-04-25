@@ -21,6 +21,7 @@ interface FinishedBuild {
 }
 interface EASUpdateOptions {
     type: AppProfile;
+    updateBranchName?: string;
 }
 interface EASBuildOptions {
     profile: string;
@@ -43,7 +44,7 @@ export declare const getBuilds: ({ runtimeVersion }: GetBuildOptions) => Promise
  * @param options - The options for the function.
  * @returns The trimmed output from the executed command.
  */
-export declare const easUpdate: ({ type }: EASUpdateOptions) => Promise<string>;
+export declare const easUpdate: ({ type, updateBranchName, }: EASUpdateOptions) => Promise<string>;
 /**
  * Build the EAS app for the specified platform and profile.
  * @param options - The options for the function.
