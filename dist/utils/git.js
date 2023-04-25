@@ -77,7 +77,6 @@ const configureGit = () => {
 };
 exports.configureGit = configureGit;
 const forcePush = (branch) => __awaiter(void 0, void 0, void 0, function* () {
-    // await getCwdExecOutput("git", ["diff", "--quiet", "HEAD..origin/main"]);
     yield (0, exec_1.getCwdExecOutput)("git", [
         "push",
         "origin",

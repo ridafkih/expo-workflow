@@ -13,9 +13,15 @@ exports.getCompatibleBuilds = exports.easBuild = exports.easUpdate = exports.get
 const core_1 = require("@actions/core");
 const exec_1 = require("./exec");
 const git_1 = require("./git");
+/**
+ * Get the Expo app config for a given git reference, profile, and platform.
+ * @param options The options for the function.
+ * @returns The Expo app config.
+ */
 const getExpoAppConfig = ({ gitReference, profile, platform, }) => __awaiter(void 0, void 0, void 0, function* () {
-    if (gitReference)
+    if (gitReference) {
         yield (0, git_1.checkout)(gitReference);
+    }
     const stdout = yield (0, exec_1.getCwdExecOutput)("eas", [
         "config",
         `--profile=${profile}`,
@@ -27,14 +33,25 @@ const getExpoAppConfig = ({ gitReference, profile, platform, }) => __awaiter(voi
     return appConfig;
 });
 exports.getExpoAppConfig = getExpoAppConfig;
+/**
+ * Get the finished builds for a given runtime version.
+ * @param options - The options for the function.
+ * @returns The list of finished builds.
+ */
 const getBuilds = ({ runtimeVersion }) => __awaiter(void 0, void 0, void 0, function* () {
     const options = ["--status=finished", "--non-interactive", "--json"];
-    if (runtimeVersion)
+    if (runtimeVersion) {
         options.push(`--runtimeVersion=${runtimeVersion}`);
+    }
     const stdout = yield (0, exec_1.getCwdExecOutput)("eas", ["build:list", ...options]);
     return JSON.parse(stdout);
 });
 exports.getBuilds = getBuilds;
+/**
+ * Update the EAS app with the latest commit message.
+ * @param options - The options for the function.
+ * @returns The trimmed output from the executed command.
+ */
 const easUpdate = ({ type }) => __awaiter(void 0, void 0, void 0, function* () {
     const branchName = (0, core_1.getInput)("branch-name");
     const commitMessageContents = yield (0, git_1.getLatestCommitMessage)();
@@ -47,6 +64,11 @@ const easUpdate = ({ type }) => __awaiter(void 0, void 0, void 0, function* () {
     ], { env: Object.assign({ APP_VARIANT: type }, process.env) });
 });
 exports.easUpdate = easUpdate;
+/**
+ * Build the EAS app for the specified platform and profile.
+ * @param options - The options for the function.
+ * @returns The iOS and Android build information.
+ */
 const easBuild = ({ platform, profile }) => __awaiter(void 0, void 0, void 0, function* () {
     const stdout = yield (0, exec_1.getCwdExecOutput)("eas", [
         "build",
@@ -56,24 +78,32 @@ const easBuild = ({ platform, profile }) => __awaiter(void 0, void 0, void 0, fu
         "--non-interactive",
     ]);
     const builds = JSON.parse(stdout);
-    const [ios] = builds.filter(({ platform }) => platform === "IOS");
-    const [android] = builds.filter(({ platform }) => platform === "ANDROID");
+    const ios = builds.find(({ platform }) => platform === "IOS");
+    const android = builds.find(({ platform }) => platform === "ANDROID");
     return { ios, android };
 });
 exports.easBuild = easBuild;
+/**
+ * Get compatible builds for the specified app profiles.
+ * @param profiles - The app profiles to check compatibility for.
+ * @returns The compatible builds, their count, profile, and app configuration.
+ * @throws Throws an error if runtimeVersion in the Expo configuration is not a string.
+ */
 const getCompatibleBuilds = (profiles) => __awaiter(void 0, void 0, void 0, function* () {
     for (const profile of profiles) {
         const appConfig = yield (0, exports.getExpoAppConfig)({
             platform: "ios",
             profile,
         });
-        if (typeof appConfig.runtimeVersion !== "string")
-            throw Error("`runtimeVersion` in the Expo configuration must be of type 'string'.");
+        if (typeof appConfig.runtimeVersion !== "string") {
+            throw Error("runtimeVersion in the Expo configuration must be of type 'string'.");
+        }
         const builds = yield (0, exports.getBuilds)({
             runtimeVersion: appConfig.runtimeVersion,
         });
-        if (builds.length > 0)
+        if (builds.length > 0) {
             return { builds, profile, count: builds.length, appConfig };
+        }
     }
     return { builds: [], count: 0, profile: null };
 });

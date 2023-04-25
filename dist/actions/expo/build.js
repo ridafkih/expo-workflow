@@ -13,6 +13,25 @@ exports.main = void 0;
 const core_1 = require("@actions/core");
 const expo_1 = require("../../utils/expo");
 const sticky_message_1 = require("../../utils/sticky-message");
+/**
+ * Generate a build table row for the comment
+ * @param {string} status - The build status
+ * @param {string} branchName - The branch name
+ * @param {string} version - The app version
+ * @param {string} runtimeVersion - The runtime version
+ * @param {string} iosBuildId - The iOS build ID
+ * @param {string} androidBuildId - The Android build ID
+ * @return {string} - The formatted build table row
+ */
+const buildTableRow = (status, branchName, version, runtimeVersion, iosBuildId, androidBuildId) => {
+    const iosLink = iosBuildId
+        ? `[iOS](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${iosBuildId})`
+        : "";
+    const androidLink = androidBuildId
+        ? `[Android](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${androidBuildId})`
+        : "";
+    return `| ${status} | ${branchName} | ${version} | ${runtimeVersion} | ${iosLink} / ${androidLink} |`;
+};
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const branchName = (0, core_1.getInput)("branch-name");
@@ -29,20 +48,20 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             profile: "artifact",
             platform: "ios",
         });
+        if (!version)
+            throw Error("Something has gone wrong, and the `version` in the Expo configuration cannot be found.");
+        if (!runtimeVersion || typeof runtimeVersion !== "string")
+            throw Error("Something has gone wrong, and the `runtimeVersion` in the Expo configuration cannot be found, or it is not a string.");
         yield comment.update(`
       **A native change has been detected, an artifact for this branch is being generated and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
-      | **Status** | **Branch** | **Version** | **Runtime Version** | Download |
-      |-|-|-|-|-|
-      | Building ⏳ | ${branchName} | ${version} | ${runtimeVersion} | |
+      ${buildTableRow("Building ⏳", branchName, version, runtimeVersion)}
     `);
         const build = yield (0, expo_1.easBuild)({ platform: "ios", profile: "artifact" });
         yield comment.update(`
       **A native change has been detected, an artifact for this branch has been generated and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
-      | **Status** | **Branch** | **Version** | **Runtime Version** | Download |
-      |-|-|-|-|-|
-      | Complete ✅ | ${branchName} | ${version} | ${runtimeVersion} | [iOS](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${(_a = build.ios) === null || _a === void 0 ? void 0 : _a.id}) / [Android](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${(_b = build.android) === null || _b === void 0 ? void 0 : _b.id}) |
+      ${buildTableRow("Complete ✅", branchName, version, runtimeVersion, (_a = build.ios) === null || _a === void 0 ? void 0 : _a.id, (_b = build.android) === null || _b === void 0 ? void 0 : _b.id)}
     `);
         return;
     }
@@ -51,9 +70,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
-    | **Status** | **Branch** | **Version** | **Runtime Version** | Download |
-    |-|-|-|-|-|
-    | Found 🔍 | ${branchName} | ${ios.appVersion} | ${ios.runtimeVersion} | [iOS](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${ios === null || ios === void 0 ? void 0 : ios.id}) / [Android](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${android === null || android === void 0 ? void 0 : android.id}) |
+    ${buildTableRow("Found 🔍", branchName, ios.appVersion, ios.runtimeVersion, ios === null || ios === void 0 ? void 0 : ios.id, android === null || android === void 0 ? void 0 : android.id)}
   `);
 });
 exports.main = main;

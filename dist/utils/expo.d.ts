@@ -26,19 +26,39 @@ interface EASBuildOptions {
     profile: string;
     platform: "ios" | "android" | "all";
 }
+/**
+ * Get the Expo app config for a given git reference, profile, and platform.
+ * @param options The options for the function.
+ * @returns The Expo app config.
+ */
 export declare const getExpoAppConfig: ({ gitReference, profile, platform, }: GetExpoAppConfigOptions) => Promise<ExpoConfig>;
+/**
+ * Get the finished builds for a given runtime version.
+ * @param options - The options for the function.
+ * @returns The list of finished builds.
+ */
 export declare const getBuilds: ({ runtimeVersion }: GetBuildOptions) => Promise<FinishedBuild[]>;
+/**
+ * Update the EAS app with the latest commit message.
+ * @param options - The options for the function.
+ * @returns The trimmed output from the executed command.
+ */
 export declare const easUpdate: ({ type }: EASUpdateOptions) => Promise<string>;
+/**
+ * Build the EAS app for the specified platform and profile.
+ * @param options - The options for the function.
+ * @returns The iOS and Android build information.
+ */
 export declare const easBuild: ({ platform, profile }: EASBuildOptions) => Promise<{
-    ios: {
-        platform: "IOS" | "ANDROID";
-        id: string;
-    };
-    android: {
-        platform: "IOS" | "ANDROID";
-        id: string;
-    };
+    ios: FinishedBuild | undefined;
+    android: FinishedBuild | undefined;
 }>;
+/**
+ * Get compatible builds for the specified app profiles.
+ * @param profiles - The app profiles to check compatibility for.
+ * @returns The compatible builds, their count, profile, and app configuration.
+ * @throws Throws an error if runtimeVersion in the Expo configuration is not a string.
+ */
 export declare const getCompatibleBuilds: (profiles: AppProfile[]) => Promise<{
     builds: FinishedBuild[];
     profile: AppProfile;

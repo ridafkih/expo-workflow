@@ -12,9 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkReferencesDependencies = exports.getDependencyHash = void 0;
 const exec_1 = require("./exec");
 const git_1 = require("./git");
+/**
+ * Get the dependency hash for a given git reference.
+ * @param options - The options for the function.
+ * @returns The dependency hash.
+ */
 const getDependencyHash = ({ gitReference, }) => __awaiter(void 0, void 0, void 0, function* () {
-    if (gitReference)
+    if (gitReference) {
         yield (0, git_1.checkout)(gitReference);
+    }
     const hash = yield (0, exec_1.getCwdExecOutput)("npx", [
         "dephash",
         "hash",
@@ -25,13 +31,19 @@ const getDependencyHash = ({ gitReference, }) => __awaiter(void 0, void 0, void 
     return hash;
 });
 exports.getDependencyHash = getDependencyHash;
+/**
+ * Check if the dependencies of git references match the anchor reference.
+ * @param options - The options for the function.
+ * @returns True if all git references have the same dependency hash as the anchor reference, false otherwise.
+ */
 const checkReferencesDependencies = ({ gitReferences: [anchorReference, ...gitReferences], }) => __awaiter(void 0, void 0, void 0, function* () {
     const anchorHash = yield (0, exports.getDependencyHash)({ gitReference: anchorReference });
     for (const gitReference of gitReferences) {
         const referenceHash = yield (0, exports.getDependencyHash)({ gitReference });
         console.log({ referenceHash });
-        if (referenceHash !== anchorHash)
+        if (referenceHash !== anchorHash) {
             return false;
+        }
     }
     return true;
 });

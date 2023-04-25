@@ -21,10 +21,7 @@ export const main = async () => {
 
   const comment = await getMessage(
     "update",
-    `**When a build artifact compatible with this pull request is found, the information to download it will be placed here. If a compatible build cannot be found, it will be created. In the meantime, you can check builds [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds)**
-
-    Hang tight while a build is found, or generated.
-    `
+    `**An update containing your changes is being generated. Once the update is generated, this comment will be updated with a QR code to scan. In the meantime, you can check updates [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/updates)**`
   );
 
   const { appConfig, profile = "artifact" } = await getCompatibleBuilds([
