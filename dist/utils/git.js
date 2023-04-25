@@ -59,7 +59,7 @@ const configureGit = () => {
             "remote",
             "set-url",
             "origin",
-            `https://ridafkih:${(0, core_1.getInput)("github-token")}@github.com/ridafkih/maxrewards.git`,
+            `https://ridafkih:${(0, core_1.getInput)("github-token")}@github.com/ridafkih/expo-workflow-candidate.git`,
         ]),
         (0, exec_1.getCwdExecOutput)("git", [
             "config",

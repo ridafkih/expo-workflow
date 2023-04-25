@@ -60,7 +60,7 @@ export const configureGit = () => {
       "origin",
       `https://ridafkih:${getInput(
         "github-token"
-      )}@github.com/ridafkih/maxrewards.git`,
+      )}@github.com/ridafkih/expo-workflow-candidate.git`,
     ]),
     getCwdExecOutput("git", [
       "config",
