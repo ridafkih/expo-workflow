@@ -1,0 +1,80 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCompatibleBuilds = exports.easBuild = exports.easUpdate = exports.getBuilds = exports.getExpoAppConfig = void 0;
+const core_1 = require("@actions/core");
+const exec_1 = require("./exec");
+const git_1 = require("./git");
+const getExpoAppConfig = ({ gitReference, profile, platform, }) => __awaiter(void 0, void 0, void 0, function* () {
+    if (gitReference)
+        yield (0, git_1.checkout)(gitReference);
+    const stdout = yield (0, exec_1.getCwdExecOutput)("eas", [
+        "config",
+        `--profile=${profile}`,
+        `--platform=${platform}`,
+        "--non-interactive",
+        "--json",
+    ]);
+    const { appConfig } = JSON.parse(stdout);
+    return appConfig;
+});
+exports.getExpoAppConfig = getExpoAppConfig;
+const getBuilds = ({ runtimeVersion }) => __awaiter(void 0, void 0, void 0, function* () {
+    const options = ["--status=finished", "--non-interactive", "--json"];
+    if (runtimeVersion)
+        options.push(`--runtimeVersion=${runtimeVersion}`);
+    const stdout = yield (0, exec_1.getCwdExecOutput)("eas", ["build:list", ...options]);
+    return JSON.parse(stdout);
+});
+exports.getBuilds = getBuilds;
+const easUpdate = ({ type }) => __awaiter(void 0, void 0, void 0, function* () {
+    const branchName = (0, core_1.getInput)("branch-name");
+    const commitMessageContents = yield (0, git_1.getLatestCommitMessage)();
+    return (0, exec_1.getCwdExecOutput)("eas", [
+        "update",
+        `--message`,
+        commitMessageContents,
+        `--branch=${branchName}`,
+        "--non-interactive",
+    ], { env: Object.assign({ APP_VARIANT: type }, process.env) });
+});
+exports.easUpdate = easUpdate;
+const easBuild = ({ platform, profile }) => __awaiter(void 0, void 0, void 0, function* () {
+    const stdout = yield (0, exec_1.getCwdExecOutput)("eas", [
+        "build",
+        `--platform=${platform}`,
+        `--profile=${profile}`,
+        "--json",
+        "--non-interactive",
+    ]);
+    const builds = JSON.parse(stdout);
+    const [ios] = builds.filter(({ platform }) => platform === "IOS");
+    const [android] = builds.filter(({ platform }) => platform === "ANDROID");
+    return { ios, android };
+});
+exports.easBuild = easBuild;
+const getCompatibleBuilds = (profiles) => __awaiter(void 0, void 0, void 0, function* () {
+    for (const profile of profiles) {
+        const appConfig = yield (0, exports.getExpoAppConfig)({
+            platform: "ios",
+            profile,
+        });
+        if (typeof appConfig.runtimeVersion !== "string")
+            throw Error("`runtimeVersion` in the Expo configuration must be of type 'string'.");
+        const builds = yield (0, exports.getBuilds)({
+            runtimeVersion: appConfig.runtimeVersion,
+        });
+        if (builds.length > 0)
+            return { builds, profile, count: builds.length, appConfig };
+    }
+    return { builds: [], count: 0, profile: null };
+});
+exports.getCompatibleBuilds = getCompatibleBuilds;

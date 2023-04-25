@@ -1,0 +1,12 @@
+name: "EAS Build"
+description: ""
+inputs:
+  branch-name:
+    description: 'The name of the pull request branch, use github.head_ref || github.ref_name'
+    required: true
+  github-token:
+    description: 'The GitHub token for the user that should post pull request comments.'
+    required: true
+runs:
+  using: "node16"
+  main: "../../dist/actions/expo/build.js"

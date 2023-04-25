@@ -1,0 +1,21 @@
+{
+  "name": "expo-workflow",
+  "version": "0.8.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.1.1",
+    "@actions/http-client": "^2.1.0"
+  },
+  "devDependencies": {
+    "@expo/config-types": "^48.0.0",
+    "@types/node": "^18.16.0",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.4"
+  }
+}

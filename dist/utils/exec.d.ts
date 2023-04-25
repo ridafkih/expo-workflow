@@ -1,0 +1,2 @@
+export declare const getCwdExecOutput: (commandLine: string, args?: string[] | undefined, options?: import("@actions/exec").ExecOptions | undefined) => Promise<string>;
+//# sourceMappingURL=exec.d.ts.map
