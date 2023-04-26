@@ -20,7 +20,6 @@ const cwd = process.cwd();
  * @returns The trimmed output from the executed command.
  */
 const getCwdExecOutput = (command, commandArguments = [], options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(command, commandArguments, options);
     const { exitCode, stdout, stderr } = yield (0, exec_1.getExecOutput)(command, commandArguments, Object.assign(Object.assign({}, options), { cwd, ignoreReturnCode: true }));
     if (exitCode !== 0) {
         throw Error(`Command exited with code ${exitCode}: ${stderr}`);

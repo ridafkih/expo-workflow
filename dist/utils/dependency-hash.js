@@ -34,7 +34,6 @@ const checkReferencesDependencies = ({ gitReferences: [anchorReference, ...gitRe
     const anchorHash = yield (0, exports.getDependencyHash)({ gitReference: anchorReference });
     for (const gitReference of gitReferences) {
         const referenceHash = yield (0, exports.getDependencyHash)({ gitReference });
-        console.log({ referenceHash });
         if (referenceHash !== anchorHash) {
             return false;
         }

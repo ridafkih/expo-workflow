@@ -38,8 +38,6 @@ export const checkReferencesDependencies = async ({
 
   for (const gitReference of gitReferences) {
     const referenceHash = await getDependencyHash({ gitReference });
-    console.log({ referenceHash });
-
     if (referenceHash !== anchorHash) {
       return false;
     }

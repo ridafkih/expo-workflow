@@ -14,7 +14,6 @@ export const getCwdExecOutput = async (
   commandArguments: string[] = [],
   options: import("@actions/exec").ExecOptions = {}
 ): Promise<string> => {
-  console.log(command, commandArguments, options);
   const { exitCode, stdout, stderr } = await getExecOutput(
     command,
     commandArguments,
