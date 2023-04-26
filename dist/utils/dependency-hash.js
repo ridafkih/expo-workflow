@@ -21,13 +21,7 @@ const getDependencyHash = ({ gitReference, }) => __awaiter(void 0, void 0, void 
     if (gitReference) {
         yield (0, git_1.checkout)(gitReference);
     }
-    const hash = yield (0, exec_1.getCwdExecOutput)("npx", [
-        "dephash",
-        "hash",
-        "--raw",
-        "--additional-patterns",
-        "**/*.md",
-    ]);
+    const hash = yield (0, exec_1.getCwdExecOutput)("npx", ["dephash", "hash", "--raw"]);
     return hash;
 });
 exports.getDependencyHash = getDependencyHash;

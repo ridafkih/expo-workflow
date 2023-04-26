@@ -1,6 +1,5 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-import { getInput } from "@actions/core";
 import {
   checkout,
   configureGit,
@@ -13,12 +12,15 @@ import { checkReferencesDependencies } from "../../utils/dependency-hash";
 import { incrementVersion } from "../../utils/npm";
 import { getCwdExecOutput } from "../../utils/exec";
 import { easBuild, easUpdate } from "../../utils/expo";
+import { context } from "@actions/github";
 
 const handleNonMatchingVersions = async (
   versionTags: Awaited<ReturnType<typeof getVersionTags>>,
-  majorMinor: string,
   version: string
 ) => {
+  const [major, minor] = version.split(".");
+  const majorMinor = `${major}.${minor}`;
+
   const { patches } = versionTags[majorMinor];
   const isMostRecentPatch = patches[patches.length - 1] === `v${version}`;
 
@@ -45,6 +47,7 @@ const handleNonMatchingVersions = async (
   ]);
 
   await incrementVersion("patch");
+  await easUpdate({ type: "development", updateBranchName: "main" });
 
   await forcePush("main").catch(() => undefined);
 };
@@ -55,12 +58,22 @@ export const main = async () => {
   const lastCommitVersionTag = await getLastCommitVersionTag();
   if (lastCommitVersionTag) return;
 
+  await getCwdExecOutput("git", ["pull", "--all"]);
   const versionTags = await getVersionTags();
   const tags = Object.entries(versionTags);
   const [majorMinor, { latest }] = tags[tags.length - 1];
 
-  const head = getInput("head");
-  await checkout(head);
+  await checkout("main");
+  await getCwdExecOutput("git", ["log"]);
+  const firstNonMergeCommit = await getCwdExecOutput("git", [
+    "log",
+    "--no-merges",
+    "-n",
+    "1",
+    "--pretty=format:%H",
+  ]);
+
+  await checkout(firstNonMergeCommit);
 
   const { version } = JSON.parse(
     readFileSync(join(process.cwd(), "package.json"), "utf-8")
@@ -78,15 +91,15 @@ export const main = async () => {
   }
 
   if (isLatestVersionDifferent) {
-    await handleNonMatchingVersions(versionTags, majorMinor, version);
-    return;
+    return handleNonMatchingVersions(versionTags, version);
   }
 
   const isPatch = await checkReferencesDependencies({
-    gitReferences: [latest, head],
+    gitReferences: [latest, context.sha],
   });
 
   await getCwdExecOutput("git", ["stash"]);
+  await checkout("main", false);
   await configureGit();
   await incrementVersion(isPatch ? "patch" : "minor");
   await forcePush("main").catch(() => undefined);

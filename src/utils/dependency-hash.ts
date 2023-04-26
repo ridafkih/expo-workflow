@@ -21,13 +21,7 @@ export const getDependencyHash = async ({
     await checkout(gitReference);
   }
 
-  const hash = await getCwdExecOutput("npx", [
-    "dephash",
-    "hash",
-    "--raw",
-    "--additional-patterns",
-    "**/*.md",
-  ]);
+  const hash = await getCwdExecOutput("npx", ["dephash", "hash", "--raw"]);
 
   return hash;
 };
