@@ -29,7 +29,8 @@ const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, vo
     yield (0, exec_1.getCwdExecOutput)("git", ["stash"]);
     yield (0, git_1.configureGit)();
     const patchVersion = yield (0, npm_1.incrementVersion)("patch");
-    yield (0, git_1.checkout)("main", false);
+    yield (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
+    yield (0, git_1.checkout)("main");
     yield (0, exec_1.getCwdExecOutput)("git", [
         "merge",
         patchVersion,

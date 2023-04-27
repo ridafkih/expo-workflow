@@ -34,8 +34,9 @@ const handleNonMatchingVersions = async (
   await configureGit();
 
   const patchVersion = await incrementVersion("patch");
+  await easUpdate({ type: "development", updateBranchName: "main" });
 
-  await checkout("main", false);
+  await checkout("main");
   await getCwdExecOutput("git", [
     "merge",
     patchVersion,
