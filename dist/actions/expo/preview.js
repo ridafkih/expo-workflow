@@ -24,7 +24,11 @@ const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, vo
     const majorMinor = `${major}.${minor}`;
     const { patches = [] } = (_a = versionTags === null || versionTags === void 0 ? void 0 : versionTags[majorMinor]) !== null && _a !== void 0 ? _a : {};
     if (patches.length === 0) {
-        return (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
+        Promise.allSettled([
+            (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" }),
+            (0, expo_1.easBuild)({ platform: "ios", profile: "development" }),
+        ]);
+        return;
     }
     const isMostRecentPatch = patches[patches.length - 1] === `v${version}`;
     if (!isMostRecentPatch) {

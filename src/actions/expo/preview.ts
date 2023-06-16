@@ -24,7 +24,12 @@ const handleNonMatchingVersions = async (
   const { patches = [] } = versionTags?.[majorMinor] ?? {};
 
   if (patches.length === 0) {
-    return easUpdate({ type: "development", updateBranchName: "main" });
+    Promise.allSettled([
+      easUpdate({ type: "development", updateBranchName: "main" }),
+      easBuild({ platform: "ios", profile: "development" }),
+    ]);
+
+    return;
   }
 
   const isMostRecentPatch = patches[patches.length - 1] === `v${version}`;
