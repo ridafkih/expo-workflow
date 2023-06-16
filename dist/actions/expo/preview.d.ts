@@ -1,2 +1,2 @@
-export declare const main: () => Promise<string | void>;
+export declare const main: () => Promise<string | undefined>;
 //# sourceMappingURL=preview.d.ts.map

@@ -21,7 +21,10 @@ const github_1 = require("@actions/github");
 const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, void 0, void 0, function* () {
     const [major, minor] = version.split(".");
     const majorMinor = `${major}.${minor}`;
-    const { patches } = versionTags[majorMinor];
+    const { patches = [] } = versionTags === null || versionTags === void 0 ? void 0 : versionTags[majorMinor];
+    if (patches.length === 0) {
+        return (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
+    }
     const isMostRecentPatch = patches[patches.length - 1] === `v${version}`;
     if (!isMostRecentPatch) {
         throw Error("You can only apply a patch to the most recent patch in the patch set. Please ensure you are updating the latest patch.");
