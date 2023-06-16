@@ -13,8 +13,11 @@ exports.main = void 0;
 const core_1 = require("@actions/core");
 const expo_1 = require("../../utils/expo");
 const sticky_message_1 = require("../../utils/sticky-message");
-const createQRCodeTable = (branchName, appConfig) => {
+const createQRCodeTable = (branchName, appConfig, type) => {
     var _a;
+    const appScheme = type === "development"
+        ? "maxrewards%2bdevelopment"
+        : "maxrewards%2bartifact";
     return `
   <table>
     <tr align="center">
@@ -22,7 +25,7 @@ const createQRCodeTable = (branchName, appConfig) => {
     </tr>
     <tr>
       <td align="center">
-        <img src="https://qr.expo.dev/development-client?appScheme=maxrewards%2bartifact&url=${(_a = appConfig === null || appConfig === void 0 ? void 0 : appConfig.updates) === null || _a === void 0 ? void 0 : _a.url}?channel-name=${branchName}" width="150" height="150" />
+        <img src="https://qr.expo.dev/development-client?appScheme=${appScheme}&url=${(_a = appConfig === null || appConfig === void 0 ? void 0 : appConfig.updates) === null || _a === void 0 ? void 0 : _a.url}?channel-name=${branchName}" width="150" height="150" />
       </td>
     </tr>
   </table>
@@ -40,7 +43,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield comment.update(`
     **The EAS update for this branch has been generated. Ensure you have the correct client installed and scan the QR code below to preview the update. You can inspect the update [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/branches/${branchName})**
 
-    ${createQRCodeTable(branchName, appConfig)}
+    ${createQRCodeTable(branchName, appConfig, type)}
   `);
 });
 exports.main = main;
