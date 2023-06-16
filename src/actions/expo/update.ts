@@ -36,8 +36,8 @@ export const main = async () => {
   );
 
   const { appConfig, profile = "artifact" } = await getCompatibleBuilds([
-    "artifact",
     "development",
+    "artifact",
   ]);
 
   const type = profile === "artifact" ? "artifact" : "development";

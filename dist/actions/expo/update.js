@@ -35,8 +35,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const branchName = (0, core_1.getInput)("branch-name");
     const comment = yield (0, sticky_message_1.getMessage)("update", `**An update containing your changes is being generated. Once the update is generated, this comment will be updated with a QR code to scan. In the meantime, you can check updates [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/updates)**`);
     const { appConfig, profile = "artifact" } = yield (0, expo_1.getCompatibleBuilds)([
-        "artifact",
         "development",
+        "artifact",
     ]);
     const type = profile === "artifact" ? "artifact" : "development";
     yield (0, expo_1.easUpdate)({ type });
