@@ -19,9 +19,10 @@ const exec_1 = require("../../utils/exec");
 const expo_1 = require("../../utils/expo");
 const github_1 = require("@actions/github");
 const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const [major, minor] = version.split(".");
     const majorMinor = `${major}.${minor}`;
-    const { patches = [] } = versionTags === null || versionTags === void 0 ? void 0 : versionTags[majorMinor];
+    const { patches = [] } = (_a = versionTags === null || versionTags === void 0 ? void 0 : versionTags[majorMinor]) !== null && _a !== void 0 ? _a : {};
     if (patches.length === 0) {
         return (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
     }

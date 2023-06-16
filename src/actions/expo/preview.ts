@@ -21,7 +21,7 @@ const handleNonMatchingVersions = async (
   const [major, minor] = version.split(".");
   const majorMinor = `${major}.${minor}`;
 
-  const { patches = [] } = versionTags?.[majorMinor];
+  const { patches = [] } = versionTags?.[majorMinor] ?? {};
 
   if (patches.length === 0) {
     return easUpdate({ type: "development", updateBranchName: "main" });
