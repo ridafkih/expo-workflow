@@ -52,15 +52,19 @@ export const getLastCommitVersionTag = () => {
   ]).catch(() => undefined);
 };
 
-export const configureGit = () => {
+export const configureGit = (
+  username: string,
+  organizationName: string,
+  repositoryName: string
+) => {
   return Promise.all([
     getCwdExecOutput("git", [
       "remote",
       "set-url",
       "origin",
-      `https://ridafkih:${getInput(
+      `https://${username}:${getInput(
         "github-token"
-      )}@github.com/ridafkih/expo-workflow-candidate.git`,
+      )}@github.com/${organizationName}/${repositoryName}.git`,
     ]),
     getCwdExecOutput("git", [
       "config",

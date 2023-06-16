@@ -13,6 +13,7 @@ import { incrementVersion } from "../../utils/npm";
 import { getCwdExecOutput } from "../../utils/exec";
 import { easBuild, easUpdate } from "../../utils/expo";
 import { context } from "@actions/github";
+import { getInput } from "@actions/core";
 
 const handleNonMatchingVersions = async (
   versionTags: Awaited<ReturnType<typeof getVersionTags>>,
@@ -41,7 +42,12 @@ const handleNonMatchingVersions = async (
   }
 
   await getCwdExecOutput("git", ["stash"]);
-  await configureGit();
+
+  await configureGit(
+    getInput("github-username"),
+    getInput("organization-name"),
+    getInput("repository-name")
+  );
 
   const patchVersion = await incrementVersion("patch");
   await easUpdate({ type: "development", updateBranchName: "main" });
@@ -111,7 +117,13 @@ export const main = async () => {
 
   await getCwdExecOutput("git", ["stash"]);
   await checkout("main", false);
-  await configureGit();
+
+  await configureGit(
+    getInput("github-username"),
+    getInput("organization-name"),
+    getInput("repository-name")
+  );
+
   await incrementVersion(isPatch ? "patch" : "minor");
   await forcePush("main").catch(() => undefined);
 

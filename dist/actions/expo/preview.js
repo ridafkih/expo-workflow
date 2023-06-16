@@ -18,6 +18,7 @@ const npm_1 = require("../../utils/npm");
 const exec_1 = require("../../utils/exec");
 const expo_1 = require("../../utils/expo");
 const github_1 = require("@actions/github");
+const core_1 = require("@actions/core");
 const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const [major, minor] = version.split(".");
@@ -35,7 +36,7 @@ const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, vo
         throw Error("You can only apply a patch to the most recent patch in the patch set. Please ensure you are updating the latest patch.");
     }
     yield (0, exec_1.getCwdExecOutput)("git", ["stash"]);
-    yield (0, git_1.configureGit)();
+    yield (0, git_1.configureGit)((0, core_1.getInput)("github-username"), (0, core_1.getInput)("organization-name"), (0, core_1.getInput)("repository-name"));
     const patchVersion = yield (0, npm_1.incrementVersion)("patch");
     yield (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
     yield (0, git_1.checkout)("main");
@@ -86,7 +87,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     yield (0, exec_1.getCwdExecOutput)("git", ["stash"]);
     yield (0, git_1.checkout)("main", false);
-    yield (0, git_1.configureGit)();
+    yield (0, git_1.configureGit)((0, core_1.getInput)("github-username"), (0, core_1.getInput)("organization-name"), (0, core_1.getInput)("repository-name"));
     yield (0, npm_1.incrementVersion)(isPatch ? "patch" : "minor");
     yield (0, git_1.forcePush)("main").catch(() => undefined);
     if (isPatch)
