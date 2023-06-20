@@ -90,9 +90,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, git_1.configureGit)((0, core_1.getInput)("github-username"), (0, core_1.getInput)("organization-name"), (0, core_1.getInput)("repository-name"));
     yield (0, npm_1.incrementVersion)(isPatch ? "patch" : "minor");
     yield (0, git_1.forcePush)("main").catch(() => undefined);
-    if (isPatch)
-        return (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
-    (0, expo_1.easBuild)({ platform: "ios", profile: "development" });
+    (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
+    if (!isPatch)
+        (0, expo_1.easBuild)({ platform: "ios", profile: "development" });
 });
 exports.main = main;
 (0, exports.main)();

@@ -127,10 +127,8 @@ export const main = async () => {
   await incrementVersion(isPatch ? "patch" : "minor");
   await forcePush("main").catch(() => undefined);
 
-  if (isPatch)
-    return easUpdate({ type: "development", updateBranchName: "main" });
-
-  easBuild({ platform: "ios", profile: "development" });
+  easUpdate({ type: "development", updateBranchName: "main" });
+  if (!isPatch) easBuild({ platform: "ios", profile: "development" });
 };
 
 main();
