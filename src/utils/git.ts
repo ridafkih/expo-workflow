@@ -7,8 +7,6 @@ interface VersionDetails {
   latest: string;
 }
 
-interface PushOptions {}
-
 export const checkout = async (reference: string, install: boolean = true) => {
   await getCwdExecOutput("git", ["checkout", reference]).catch(() => undefined);
   if (install) await getCwdExecOutput("yarn");

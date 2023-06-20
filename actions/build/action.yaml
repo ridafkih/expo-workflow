@@ -7,6 +7,15 @@ inputs:
   github-token:
     description: 'The GitHub token for the user that should post pull request comments.'
     required: true
+  github-username:
+    description: 'The GitHub username of the user who owns the PAT'
+    required: true
+  organization-name:
+    description: 'The name of the owner on GitHub'
+    required: true
+  repository-name:
+    description: 'The name of the repository'
+    required: true
 runs:
   using: "node16"
   main: "../../dist/actions/expo/build.js"
