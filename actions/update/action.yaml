@@ -16,6 +16,9 @@ inputs:
   repository-name:
     description: 'The name of the repository'
     required: true
+  update-url:
+    description: 'The Expo update URL of the application/project'
+    required: false
 runs:
   using: "node16"
   main: "../../dist/actions/expo/update.js"
