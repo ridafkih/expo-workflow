@@ -1,6 +1,6 @@
 {
   "name": "expo-workflow",
-  "version": "0.13.4",
+  "version": "0.14.0",
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
