@@ -27,7 +27,7 @@ const handleNonMatchingVersions = async (
   if (patches.length === 0) {
     Promise.allSettled([
       easUpdate({ type: "development", updateBranchName: "main" }),
-      easBuild({ platform: "ios", profile: "development" }),
+      easBuild({ platform: "all", profile: "development" }),
     ]);
 
     return;
@@ -128,7 +128,7 @@ export const main = async () => {
   await forcePush("main").catch(() => undefined);
 
   easUpdate({ type: "development", updateBranchName: "main" });
-  if (!isPatch) easBuild({ platform: "ios", profile: "development" });
+  if (!isPatch) easBuild({ platform: "all", profile: "development" });
 };
 
 main();
