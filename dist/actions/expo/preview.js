@@ -27,7 +27,7 @@ const handleNonMatchingVersions = (versionTags, version) => __awaiter(void 0, vo
     if (patches.length === 0) {
         Promise.allSettled([
             (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" }),
-            (0, expo_1.easBuild)({ platform: "ios", profile: "development" }),
+            (0, expo_1.easBuild)({ platform: "all", profile: "development" }),
         ]);
         return;
     }
@@ -92,7 +92,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, git_1.forcePush)("main").catch(() => undefined);
     (0, expo_1.easUpdate)({ type: "development", updateBranchName: "main" });
     if (!isPatch)
-        (0, expo_1.easBuild)({ platform: "ios", profile: "development" });
+        (0, expo_1.easBuild)({ platform: "all", profile: "development" });
 });
 exports.main = main;
 (0, exports.main)();
