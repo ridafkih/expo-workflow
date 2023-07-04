@@ -80,7 +80,7 @@ export const main = async () => {
       })}
     `);
 
-    const build = await easBuild({ platform: "ios", profile: "artifact" });
+    const build = await easBuild({ platform: "all", profile: "artifact" });
 
     await comment.update(`
       **A native change has been detected, an artifact for this branch has been generated and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
