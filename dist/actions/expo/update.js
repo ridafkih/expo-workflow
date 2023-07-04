@@ -14,7 +14,7 @@ const core_1 = require("@actions/core");
 const expo_1 = require("../../utils/expo");
 const sticky_message_1 = require("../../utils/sticky-message");
 const createQRCodeTable = (branchName, appConfig, type) => {
-    var _a;
+    var _a, _b;
     const appScheme = type === "development"
         ? "maxrewards%2bdevelopment"
         : "maxrewards%2bartifact";
@@ -25,7 +25,7 @@ const createQRCodeTable = (branchName, appConfig, type) => {
     </tr>
     <tr>
       <td align="center">
-        <img src="https://qr.expo.dev/development-client?appScheme=${appScheme}&url=${(_a = appConfig === null || appConfig === void 0 ? void 0 : appConfig.updates) === null || _a === void 0 ? void 0 : _a.url}?channel-name=${branchName}" width="150" height="150" />
+        <img src="https://qr.expo.dev/development-client?appScheme=${appScheme}&url=${(_a = (0, core_1.getInput)("update-url")) !== null && _a !== void 0 ? _a : (_b = appConfig === null || appConfig === void 0 ? void 0 : appConfig.updates) === null || _b === void 0 ? void 0 : _b.url}?channel-name=${branchName}" width="150" height="150" />
       </td>
     </tr>
   </table>

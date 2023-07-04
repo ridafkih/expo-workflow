@@ -12,6 +12,7 @@ interface GetExpoAppConfigOptions {
 
 interface GetBuildOptions {
   runtimeVersion?: string;
+  buildProfile?: string;
 }
 
 interface FinishedBuild {
@@ -24,6 +25,7 @@ interface FinishedBuild {
     buildUrl: string;
     applicationArchiveUrl: string;
   };
+  buildProfile?: string;
 }
 
 interface EASUpdateOptions {
@@ -67,10 +69,18 @@ export const getExpoAppConfig = async ({
  * @param options - The options for the function.
  * @returns The list of finished builds.
  */
-export const getBuilds = async ({ runtimeVersion }: GetBuildOptions) => {
+export const getBuilds = async ({
+  runtimeVersion,
+  buildProfile,
+}: GetBuildOptions) => {
   const options = ["--status=finished", "--non-interactive", "--json"];
+
   if (runtimeVersion) {
     options.push(`--runtimeVersion=${runtimeVersion}`);
+  }
+
+  if (buildProfile) {
+    options.push(`--buildProfile=${buildProfile}`);
   }
 
   const stdout = await getCwdExecOutput("eas", ["build:list", ...options]);
@@ -118,8 +128,16 @@ export const easBuild = async ({ platform, profile }: EASBuildOptions) => {
 
   const builds = JSON.parse(stdout) as FinishedBuild[];
 
-  const ios = builds.find(({ platform }) => platform === "IOS");
-  const android = builds.find(({ platform }) => platform === "ANDROID");
+  const ios = builds.find(
+    ({ platform, buildProfile }) =>
+      platform === "IOS" && profile === buildProfile
+  );
+
+  const android = builds.find(
+    ({ platform, buildProfile }) =>
+      platform === "ANDROID" && profile === buildProfile
+  );
+
   return { ios, android };
 };
 /**
@@ -143,7 +161,9 @@ export const getCompatibleBuilds = async (profiles: AppProfile[]) => {
 
     const builds = await getBuilds({
       runtimeVersion: appConfig.runtimeVersion,
+      buildProfile: profile,
     });
+
     if (builds.length > 0) {
       return { builds, profile, count: builds.length, appConfig };
     }

@@ -20,7 +20,9 @@ const createQRCodeTable = (
     </tr>
     <tr>
       <td align="center">
-        <img src="https://qr.expo.dev/development-client?appScheme=${appScheme}&url=${appConfig?.updates?.url}?channel-name=${branchName}" width="150" height="150" />
+        <img src="https://qr.expo.dev/development-client?appScheme=${appScheme}&url=${
+    getInput("update-url") ?? appConfig?.updates?.url
+  }?channel-name=${branchName}" width="150" height="150" />
       </td>
     </tr>
   </table>
