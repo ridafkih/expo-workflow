@@ -56,7 +56,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             runtimeVersion,
         })}
     `);
-        const build = yield (0, expo_1.easBuild)({ platform: "ios", profile: "artifact" });
+        const build = yield (0, expo_1.easBuild)({ platform: "all", profile: "artifact" });
         yield comment.update(`
       **A native change has been detected, an artifact for this branch has been generated and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
@@ -71,8 +71,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     `);
         return;
     }
-    const [ios] = builds.filter((build) => build.platform === "IOS");
-    const [android] = builds.filter((build) => build.platform === "ANDROID");
+    const [ios] = builds.filter((build) => build.platform === "IOS" && build.buildProfile === "artifact");
+    const [android] = builds.filter((build) => build.platform === "ANDROID" && build.buildProfile === "artifact");
     yield comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
