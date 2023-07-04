@@ -38,10 +38,13 @@ exports.getExpoAppConfig = getExpoAppConfig;
  * @param options - The options for the function.
  * @returns The list of finished builds.
  */
-const getBuilds = ({ runtimeVersion }) => __awaiter(void 0, void 0, void 0, function* () {
+const getBuilds = ({ runtimeVersion, buildProfile, }) => __awaiter(void 0, void 0, void 0, function* () {
     const options = ["--status=finished", "--non-interactive", "--json"];
     if (runtimeVersion) {
         options.push(`--runtimeVersion=${runtimeVersion}`);
+    }
+    if (buildProfile) {
+        options.push(`--buildProfile=${buildProfile}`);
     }
     const stdout = yield (0, exec_1.getCwdExecOutput)("eas", ["build:list", ...options]);
     return JSON.parse(stdout);
@@ -78,8 +81,8 @@ const easBuild = ({ platform, profile }) => __awaiter(void 0, void 0, void 0, fu
         "--non-interactive",
     ]);
     const builds = JSON.parse(stdout);
-    const ios = builds.find(({ platform }) => platform === "IOS");
-    const android = builds.find(({ platform }) => platform === "ANDROID");
+    const ios = builds.find(({ platform, buildProfile }) => platform === "IOS" && profile === buildProfile);
+    const android = builds.find(({ platform, buildProfile }) => platform === "ANDROID" && profile === buildProfile);
     return { ios, android };
 });
 exports.easBuild = easBuild;
@@ -100,6 +103,7 @@ const getCompatibleBuilds = (profiles) => __awaiter(void 0, void 0, void 0, func
         }
         const builds = yield (0, exports.getBuilds)({
             runtimeVersion: appConfig.runtimeVersion,
+            buildProfile: profile,
         });
         if (builds.length > 0) {
             return { builds, profile, count: builds.length, appConfig };

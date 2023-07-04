@@ -7,6 +7,7 @@ interface GetExpoAppConfigOptions {
 }
 interface GetBuildOptions {
     runtimeVersion?: string;
+    buildProfile?: string;
 }
 interface FinishedBuild {
     id: string;
@@ -18,6 +19,7 @@ interface FinishedBuild {
         buildUrl: string;
         applicationArchiveUrl: string;
     };
+    buildProfile?: string;
 }
 interface EASUpdateOptions {
     type: AppProfile;
@@ -38,7 +40,7 @@ export declare const getExpoAppConfig: ({ gitReference, profile, platform, }: Ge
  * @param options - The options for the function.
  * @returns The list of finished builds.
  */
-export declare const getBuilds: ({ runtimeVersion }: GetBuildOptions) => Promise<FinishedBuild[]>;
+export declare const getBuilds: ({ runtimeVersion, buildProfile, }: GetBuildOptions) => Promise<FinishedBuild[]>;
 /**
  * Update the EAS app with the latest commit message.
  * @param options - The options for the function.

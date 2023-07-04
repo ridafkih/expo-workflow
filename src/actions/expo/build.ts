@@ -98,8 +98,13 @@ export const main = async () => {
     return;
   }
 
-  const [ios] = builds.filter((build) => build.platform === "IOS");
-  const [android] = builds.filter((build) => build.platform === "ANDROID");
+  const [ios] = builds.filter(
+    (build) => build.platform === "IOS" && build.buildProfile === "artifact"
+  );
+
+  const [android] = builds.filter(
+    (build) => build.platform === "ANDROID" && build.buildProfile === "artifact"
+  );
 
   await comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
