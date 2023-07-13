@@ -112,8 +112,8 @@ export const main = async () => {
     ${buildTable({
       status: "Found 🔍",
       branchName,
-      version: ios.appVersion,
-      runtimeVersion: ios.runtimeVersion,
+      version: ios?.appVersion,
+      runtimeVersion: ios?.runtimeVersion,
       iosBuildId: ios?.id,
       androidBuildId: android?.id,
     })}
