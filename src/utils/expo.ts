@@ -118,13 +118,17 @@ export const easUpdate = async ({
  * @returns The iOS and Android build information.
  */
 export const easBuild = async ({ platform, profile }: EASBuildOptions) => {
-  const stdout = await getCwdExecOutput("eas", [
-    "build",
-    `--platform=${platform}`,
-    `--profile=${profile}`,
-    "--json",
-    "--non-interactive",
-  ]);
+  const stdout = await getCwdExecOutput(
+    "eas",
+    [
+      "build",
+      `--platform=${platform}`,
+      `--profile=${profile}`,
+      "--json",
+      "--non-interactive",
+    ],
+    { env: { APP_VARIANT: profile, ...process.env } }
+  );
 
   const builds = JSON.parse(stdout) as FinishedBuild[];
 
