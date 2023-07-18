@@ -98,6 +98,8 @@ export const main = async () => {
     return;
   }
 
+  console.log(builds);
+
   const [ios] = builds.filter(
     (build) => build.platform === "IOS" && build.buildProfile === "artifact"
   );

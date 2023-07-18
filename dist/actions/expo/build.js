@@ -71,6 +71,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     `);
         return;
     }
+    console.log(builds);
     const [ios] = builds.filter((build) => build.platform === "IOS" && build.buildProfile === "artifact");
     const [android] = builds.filter((build) => build.platform === "ANDROID" && build.buildProfile === "artifact");
     yield comment.update(`
@@ -79,8 +80,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     ${buildTable({
         status: "Found 🔍",
         branchName,
-        version: ios.appVersion,
-        runtimeVersion: ios.runtimeVersion,
+        version: ios === null || ios === void 0 ? void 0 : ios.appVersion,
+        runtimeVersion: ios === null || ios === void 0 ? void 0 : ios.runtimeVersion,
         iosBuildId: ios === null || ios === void 0 ? void 0 : ios.id,
         androidBuildId: android === null || android === void 0 ? void 0 : android.id,
     })}

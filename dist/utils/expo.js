@@ -79,7 +79,7 @@ const easBuild = ({ platform, profile }) => __awaiter(void 0, void 0, void 0, fu
         `--profile=${profile}`,
         "--json",
         "--non-interactive",
-    ]);
+    ], { env: Object.assign({ APP_VARIANT: profile }, process.env) });
     const builds = JSON.parse(stdout);
     const ios = builds.find(({ platform, buildProfile }) => platform === "IOS" && profile === buildProfile);
     const android = builds.find(({ platform, buildProfile }) => platform === "ANDROID" && profile === buildProfile);
