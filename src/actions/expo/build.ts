@@ -15,6 +15,18 @@ interface BuildOptions {
   androidBuildId?: string;
 }
 
+const makePlatformFilter = (platform: "IOS" | "ANDROID") => {
+  return (item: unknown) => {
+    if (!item || typeof item !== "object") return false;
+    if (!("platform" in item) || !("buildProfile" in item)) return false;
+
+    return (
+      item.platform === platform &&
+      (item.buildProfile === "artifact" || item.buildProfile === "development")
+    );
+  };
+};
+
 const buildTable = ({
   status,
   branchName,
@@ -53,7 +65,10 @@ export const main = async () => {
     "artifact",
   ]);
 
-  if (count === 0) {
+  const iosBuilds = builds.filter(makePlatformFilter("IOS"));
+  const androidBuilds = builds.filter(makePlatformFilter("ANDROID"));
+
+  if (iosBuilds.length === 0 || androidBuilds.length === 0) {
     const { version, runtimeVersion } = await getExpoAppConfig({
       profile: "artifact",
       platform: "ios",
@@ -98,21 +113,8 @@ export const main = async () => {
     return;
   }
 
-  console.log(builds);
-
-  const [ios] = builds.filter(
-    (build) =>
-      build.platform === "IOS" &&
-      (build.buildProfile === "artifact" ||
-        build.buildProfile === "development")
-  );
-
-  const [android] = builds.filter(
-    (build) =>
-      build.platform === "ANDROID" &&
-      (build.buildProfile === "artifact" ||
-        build.buildProfile === "development")
-  );
+  const [ios] = iosBuilds;
+  const [android] = androidBuilds;
 
   await comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
