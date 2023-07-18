@@ -101,11 +101,17 @@ export const main = async () => {
   console.log(builds);
 
   const [ios] = builds.filter(
-    (build) => build.platform === "IOS" && build.buildProfile === "artifact"
+    (build) =>
+      build.platform === "IOS" &&
+      (build.buildProfile === "artifact" ||
+        build.buildProfile === "development")
   );
 
   const [android] = builds.filter(
-    (build) => build.platform === "ANDROID" && build.buildProfile === "artifact"
+    (build) =>
+      build.platform === "ANDROID" &&
+      (build.buildProfile === "artifact" ||
+        build.buildProfile === "development")
   );
 
   await comment.update(`

@@ -72,8 +72,12 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     console.log(builds);
-    const [ios] = builds.filter((build) => build.platform === "IOS" && build.buildProfile === "artifact");
-    const [android] = builds.filter((build) => build.platform === "ANDROID" && build.buildProfile === "artifact");
+    const [ios] = builds.filter((build) => build.platform === "IOS" &&
+        (build.buildProfile === "artifact" ||
+            build.buildProfile === "development"));
+    const [android] = builds.filter((build) => build.platform === "ANDROID" &&
+        (build.buildProfile === "artifact" ||
+            build.buildProfile === "development"));
     yield comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
