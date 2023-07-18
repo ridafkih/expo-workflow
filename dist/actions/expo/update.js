@@ -39,7 +39,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         "artifact",
     ]);
     const type = profile === "artifact" ? "artifact" : "development";
-    yield (0, expo_1.easUpdate)({ type });
+    yield Promise.allSettled([
+        (0, expo_1.easUpdate)({ type: "development" }),
+        (0, expo_1.easUpdate)({ type: "artifact" }),
+    ]);
     yield comment.update(`
     **The EAS update for this branch has been generated. Ensure you have the correct client installed and scan the QR code below to preview the update. You can inspect the update [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/branches/${branchName})**
 
