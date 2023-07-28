@@ -101,6 +101,8 @@ export const main = async () => {
   const isVersionMismatch =
     isLatestVersionDifferent && isVersionMajorMinorMatch;
 
+  console.log({ version, latest, majorMinor });
+
   if (isVersionMismatch) {
     throw Error(
       "The current version does not match the latest version and has an unexpected major-minor combination."

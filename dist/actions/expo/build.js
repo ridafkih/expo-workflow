@@ -13,6 +13,16 @@ exports.main = void 0;
 const core_1 = require("@actions/core");
 const expo_1 = require("../../utils/expo");
 const sticky_message_1 = require("../../utils/sticky-message");
+const makePlatformFilter = (platform) => {
+    return (item) => {
+        if (!item || typeof item !== "object")
+            return false;
+        if (!("platform" in item) || !("buildProfile" in item))
+            return false;
+        return (item.platform === platform &&
+            (item.buildProfile === "artifact" || item.buildProfile === "development"));
+    };
+};
 const buildTable = ({ status, branchName, version, runtimeVersion, iosBuildId, androidBuildId, }) => {
     const iosLink = iosBuildId
         ? `[iOS](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/${iosBuildId})`
@@ -37,7 +47,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         "development",
         "artifact",
     ]);
-    if (count === 0) {
+    const iosBuilds = builds.filter(makePlatformFilter("IOS"));
+    const androidBuilds = builds.filter(makePlatformFilter("ANDROID"));
+    if (iosBuilds.length === 0 || androidBuilds.length === 0) {
         const { version, runtimeVersion } = yield (0, expo_1.getExpoAppConfig)({
             profile: "artifact",
             platform: "ios",
@@ -71,16 +83,16 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     `);
         return;
     }
-    const [ios] = builds.filter((build) => build.platform === "IOS" && build.buildProfile === "artifact");
-    const [android] = builds.filter((build) => build.platform === "ANDROID" && build.buildProfile === "artifact");
+    const [ios] = iosBuilds;
+    const [android] = androidBuilds;
     yield comment.update(`
     **A compatible artifact for this branch has been found and can be viewed [on the Expo dashboard ↗︎](https://expo.dev/accounts/maxrewards/projects/maxrewards/builds/)**
 
     ${buildTable({
         status: "Found 🔍",
         branchName,
-        version: ios.appVersion,
-        runtimeVersion: ios.runtimeVersion,
+        version: ios === null || ios === void 0 ? void 0 : ios.appVersion,
+        runtimeVersion: ios === null || ios === void 0 ? void 0 : ios.runtimeVersion,
         iosBuildId: ios === null || ios === void 0 ? void 0 : ios.id,
         androidBuildId: android === null || android === void 0 ? void 0 : android.id,
     })}

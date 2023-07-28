@@ -76,6 +76,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const isLatestVersionDifferent = latest.slice(1) !== version;
     const isVersionMajorMinorMatch = version.startsWith(majorMinor);
     const isVersionMismatch = isLatestVersionDifferent && isVersionMajorMinorMatch;
+    console.log({ version, latest, majorMinor });
     if (isVersionMismatch) {
         throw Error("The current version does not match the latest version and has an unexpected major-minor combination.");
     }
